@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Figma palette */
+    --figma-bg: 49 100% 3%; /* #100D00 */
+    --figma-surface: 0 0% 10%; /* #1A1A1A */
+    --figma-brand: 48 98% 53%; /* #FDCE12 */
+    --figma-brand-2: 33 98% 53%; /* #FD9312 */
+    --figma-soft: 48 97% 84%; /* #FEEEAE */
+    --figma-text: 45 100% 99%; /* #FFFEFB */
+    --figma-muted: 0 0% 63%; /* #A1A1A1 */
+
+    /* App theme tokens (shadcn-style) */
+    --background: var(--figma-bg);
+    --foreground: var(--figma-text);
+
+    --card: var(--figma-surface);
+    --card-foreground: var(--figma-text);
+
+    --popover: var(--figma-surface);
+    --popover-foreground: var(--figma-text);
+
+    --primary: var(--figma-brand);
+    --primary-foreground: 49 100% 3%;
+
+    --secondary: var(--figma-brand-2);
+    --secondary-foreground: 49 100% 3%;
+
+    --muted: var(--figma-surface);
+    --muted-foreground: var(--figma-soft);
+
+    --accent: var(--figma-soft);
+    --accent-foreground: 49 100% 3%;
+
+    --border: var(--figma-soft);
+    --input: var(--figma-soft);
+    --ring: var(--figma-brand);
+
+    /* Extra explicit brand tokens */
+    --brand: var(--figma-brand);
+    --brand-2: var(--figma-brand-2);
+    --brand-soft: var(--figma-soft);
+    --brand-ink: 49 100% 3%;
+
+    --radius: 12px;
+  }
+
+  * {
+    @apply border-border;
+}
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+      "Apple Color Emoji", "Segoe UI Emoji";
+  }
+}
