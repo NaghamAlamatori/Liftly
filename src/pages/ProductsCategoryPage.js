@@ -2,15 +2,7 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import SiteNav from "../components/SiteNav";
 import { cn } from "../lib/utils";
-import { mcpAsset, siteImage } from "../lib/publicAssets";
 import { supabase } from "../lib/supabaseClient";
-
-const running_shoes_1   = siteImage("Running Shoes 1.jpg");
-const running_shoes_2 = siteImage("Running Shoes 2.jpg");
-const running_shoes_3 = siteImage("Running Shoes 3.jpg");
-const running_shoes_4 = siteImage("Running Shoes 4.jpg");
-const running_shoes_5 = siteImage("Running Shoes 5.jpg");
-const running_shoes_6 = siteImage("Running Shoes 6.jpg");
 
 function titleForSlug(slug) {
   switch (slug) {
@@ -152,7 +144,7 @@ export default function ProductsCategoryPage() {
   const [pageSize, setPageSize] = React.useState(6);
   const [page, setPage] = React.useState(1);
   const [products, setProducts] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     let mounted = true;

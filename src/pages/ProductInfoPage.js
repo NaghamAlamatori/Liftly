@@ -3,16 +3,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { mcpAsset } from "../lib/publicAssets";
 
-const img = mcpAsset("322e5878-392d-4acb-8a02-ae62c8715e76");
-const img1 = mcpAsset("43b3e01e-6b34-4d19-826c-b9c9d1d3a9da");
-const imgFashion = mcpAsset("3fa258dc-4785-4796-861c-3a78f9343458");
 const imgCart = mcpAsset("f43d7e6c-f9e6-4762-9cb1-3928f68d017d");
 const imgLogo2 = mcpAsset("1f770d87-8fd8-4838-a76e-ab3fd7e5f012");
 const imgStars = mcpAsset("e60163f3-73a8-4e8d-b169-a6fbd54536be");
-const imgEllipse1 = mcpAsset("3ed147b5-96ca-4525-8164-190e50c65641");
-const imgEllipse2 = mcpAsset("2ed8c569-d28b-4b24-af14-a5d04b5b9e0c");
-const imgEllipse3 = mcpAsset("b738aa46-9b02-42b5-9aaa-83acad90a8f4");
-const imgArrow = mcpAsset("6c920c45-261a-4d5a-a671-6078c9026946");
 const imgFooterLogo = mcpAsset("ce02d4eb-3c4d-4cb0-a7b0-3e4322725adc");
 
 function Vector({ className = "" }) {

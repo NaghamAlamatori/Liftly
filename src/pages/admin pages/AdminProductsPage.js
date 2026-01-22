@@ -5,7 +5,6 @@ import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 import { supabase } from "../../lib/supabaseClient";
 import { Tag } from "lucide-react";
-import { siteImage } from "../../lib/publicAssets";
 
 function pickPk(row) {
   if (!row || typeof row !== "object") return null;

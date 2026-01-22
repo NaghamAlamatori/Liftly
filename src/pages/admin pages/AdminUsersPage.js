@@ -5,7 +5,6 @@ import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 import { supabase } from "../../lib/supabaseClient";
 import { Users } from "lucide-react";
-import { siteImage } from "../../lib/publicAssets";
 
 function normalizeUser(row) {
   const statusRaw =
@@ -161,7 +160,6 @@ export default function AdminUsersPage() {
     // Figma shows: 1 2 ... 9 10 (example). We'll show a compact version.
     const t = totalPages;
     if (t <= 7) return Array.from({ length: t }, (_, i) => i + 1);
-    const items = [1, 2, "…", t - 1, t];
     if (safePage <= 3) return [1, 2, 3, "…", t - 1, t];
     if (safePage >= t - 2) return [1, 2, "…", t - 2, t - 1, t];
     return [1, "…", safePage - 1, safePage, safePage + 1, "…", t];

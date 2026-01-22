@@ -4,13 +4,7 @@ import SiteNav from "../components/SiteNav";
 import { ConfirmDialog } from "../components/ui/confirm-dialog";
 import { mcpAsset } from "../lib/publicAssets";
 
-const imgA = mcpAsset("bf70b013-ab18-47ca-9bfd-a008d0991a28");
-const imgB = mcpAsset("4b36263c-75ac-4a11-8712-61af5c748558");
-const imgC = mcpAsset("b5864908-0d71-4429-b759-6d010f4582cf");
 const imgDelete02 = mcpAsset("cac42c35-aa86-48cc-a5ef-cbc67e9a7681");
-const imgDelete3 = mcpAsset("baf027cc-ba91-4551-9974-d84fec38a521");
-const imgDelete4 = mcpAsset("e7ad584e-d536-4010-99ea-bd80e7403c9f");
-const imgLine1 = mcpAsset("6eda30be-7a11-47c7-ad6e-2a9e4f489d83");
 const imgFooterLogo = mcpAsset("a0544397-ed14-48f3-b263-31cb93ff5ee2");
 
 function formatMoney(n) {

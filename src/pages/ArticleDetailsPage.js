@@ -4,7 +4,7 @@ import SiteNav from "../components/SiteNav";
 import { supabase } from "../lib/supabaseClient";
 import { Button } from "../components/ui/button";
 import { DUMMY_ARTICLES } from "../lib/dummyArticles";
-import { mcpAsset, siteImage } from "../lib/publicAssets";
+import { siteImage } from "../lib/publicAssets";
 
 // Fallback image (upload to `site-images/mcp/<id>`)
 const imgArticle = siteImage("Articles.png");
