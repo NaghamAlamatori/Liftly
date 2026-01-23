@@ -35,6 +35,21 @@ export default function AdminProductInfoPage() {
     image_4: "",
   });
 
+  // Determine which size options to show based on category
+  const getSizeOptions = () => {
+    const category = form.category;
+    if (category.includes("shoes")) {
+      return { type: "number", options: [] };
+    } else if (category.includes("clothing")) {
+      return { type: "dropdown", options: ["XS", "S", "M", "L", "XL", "XXL"] };
+    } else if (category === "accessories" || category === "sports-nutrition") {
+      return { type: "static", options: [] };
+    }
+    return { type: "text", options: [] };
+  };
+
+  const sizeConfig = getSizeOptions();
+
   // Track which image slot is being uploaded
   const [uploadingSlot, setUploadingSlot] = React.useState(null);
   const fileInputRef = React.useRef(null);
@@ -125,12 +140,33 @@ export default function AdminProductInfoPage() {
     setError("");
     setSaving(true);
     try {
+      const priceValue = form.price === "" ? null : Number(form.price);
+      
+      // Validate that price is not negative
+      if (priceValue !== null && priceValue < 0) {
+        setError("Price cannot be negative.");
+        setSaving(false);
+        return;
+      }
+
+      const sizeValue = String(form.size || "").trim();
+      
+      // Validate size for shoes (must be non-negative number if provided)
+      if (form.category.includes("shoes") && sizeValue) {
+        const sizeNum = Number(sizeValue);
+        if (isNaN(sizeNum) || sizeNum < 0) {
+          setError("Shoe size must be a non-negative number.");
+          setSaving(false);
+          return;
+        }
+      }
+
       const payload = {
         name: String(form.name || "").trim(),
         description: String(form.description || "").trim() || null,
-        price: form.price === "" ? null : Number(form.price),
+        price: priceValue,
         color: String(form.color || "").trim() || null,
-        size: String(form.size || "").trim() || null,
+        size: sizeValue || null,
         category: String(form.category || "").trim() || null,
         image_1: String(form.image_1 || "").trim() || null,
         image_2: String(form.image_2 || "").trim() || null,
@@ -235,24 +271,7 @@ export default function AdminProductInfoPage() {
                     value={form.price}
                     onChange={(e) => setForm((s) => ({ ...s, price: e.target.value }))}
                     placeholder="200"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="text-[14px] font-semibold text-[hsl(var(--brand-soft))]">Color</div>
-                  <Input
-                    value={form.color}
-                    onChange={(e) => setForm((s) => ({ ...s, color: e.target.value }))}
-                    placeholder="e.g. Red"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="text-[14px] font-semibold text-[hsl(var(--brand-soft))]">Size</div>
-                  <Input
-                    value={form.size}
-                    onChange={(e) => setForm((s) => ({ ...s, size: e.target.value }))}
-                    placeholder="e.g. S, M, L"
+                    min="0"
                   />
                 </div>
 
@@ -261,7 +280,7 @@ export default function AdminProductInfoPage() {
                   <select
                     className="flex h-10 w-full rounded-[14px] border border-[hsl(var(--brand))] bg-transparent px-3 py-2 text-sm text-foreground shadow-[0px_0px_0px_1px_hsl(var(--brand-2))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                     value={form.category}
-                    onChange={(e) => setForm((s) => ({ ...s, category: e.target.value }))}
+                    onChange={(e) => setForm((s) => ({ ...s, category: e.target.value, size: "" }))}
                   >
                     <option value="" className="bg-[hsl(var(--background))]">Select a category...</option>
                     <option value="mens-shoes" className="bg-[hsl(var(--background))]">Men's Shoes</option>
@@ -271,6 +290,58 @@ export default function AdminProductInfoPage() {
                     <option value="accessories" className="bg-[hsl(var(--background))]">Accessories</option>
                     <option value="sports-nutrition" className="bg-[hsl(var(--background))]">Sports Nutrition</option>
                   </select>
+                </div>
+
+                {/* Conditional Size field based on category */}
+                {sizeConfig.type !== "static" && (
+                  <div className="flex flex-col gap-2">
+                    <div className="text-[14px] font-semibold text-[hsl(var(--brand-soft))]">
+                      Size
+                      {!form.category && <span className="text-xs text-white/40"> (select category first)</span>}
+                    </div>
+                    {sizeConfig.type === "number" && (
+                      <Input
+                        type="number"
+                        value={form.size}
+                        onChange={(e) => setForm((s) => ({ ...s, size: e.target.value }))}
+                        placeholder="e.g. 10"
+                        min="0"
+                        disabled={!form.category}
+                      />
+                    )}
+                    {sizeConfig.type === "dropdown" && (
+                      <select
+                        className="flex h-10 w-full rounded-[14px] border border-[hsl(var(--brand))] bg-transparent px-3 py-2 text-sm text-foreground shadow-[0px_0px_0px_1px_hsl(var(--brand-2))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        value={form.size}
+                        onChange={(e) => setForm((s) => ({ ...s, size: e.target.value }))}
+                        disabled={!form.category}
+                      >
+                        <option value="" className="bg-[hsl(var(--background))]">Select a size...</option>
+                        {sizeConfig.options.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[hsl(var(--background))]">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    {sizeConfig.type === "text" && (
+                      <Input
+                        value={form.size}
+                        onChange={(e) => setForm((s) => ({ ...s, size: e.target.value }))}
+                        placeholder="e.g. S, M, L"
+                        disabled={!form.category}
+                      />
+                    )}
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-2">
+                  <div className="text-[14px] font-semibold text-[hsl(var(--brand-soft))]">Color</div>
+                  <Input
+                    value={form.color}
+                    onChange={(e) => setForm((s) => ({ ...s, color: e.target.value }))}
+                    placeholder="e.g. Red"
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">

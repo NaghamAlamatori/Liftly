@@ -11,6 +11,146 @@ import { mcpAsset , siteImage } from "../lib/publicAssets";
 const imgFrame7 = siteImage("plan.png");
 const imgFooterLogo = mcpAsset("5cf826ca-0143-4e72-aad7-d1d495b1e525");
 
+// Exercise data organized by body part/type
+const EXERCISES_BY_TYPE = {
+  "Chest": [
+    "Bench Press",
+    "Incline Bench Press",
+    "Decline Bench Press",
+    "Dumbbell Chest Press",
+    "Incline Dumbbell Press",
+    "Chest Fly (Dumbbell)",
+    "Chest Fly (Machine)",
+    "Cable Chest Fly",
+    "Push-Ups",
+    "Wide Push-Ups",
+    "Chest Dips",
+    "Smith Machine Bench Press",
+    "Pec Deck",
+    "Floor Press",
+    "Resistance Band Chest Press"
+  ],
+  "Back": [
+    "Pull-Ups",
+    "Chin-Ups",
+    "Lat Pulldown",
+    "Deadlift",
+    "Romanian Deadlift",
+    "Barbell Row",
+    "Dumbbell Row",
+    "Seated Cable Row",
+    "T-Bar Row",
+    "Face Pulls",
+    "Straight Arm Pulldown",
+    "Inverted Rows",
+    "Rack Pulls",
+    "Resistance Band Rows",
+    "Back Extensions"
+  ],
+  "Legs": [
+    "Back Squats",
+    "Front Squats",
+    "Goblet Squats",
+    "Leg Press",
+    "Walking Lunges",
+    "Reverse Lunges",
+    "Bulgarian Split Squats",
+    "Romanian Deadlift",
+    "Leg Curl",
+    "Leg Extension",
+    "Calf Raises",
+    "Seated Calf Raises",
+    "Hip Thrusts",
+    "Glute Bridges",
+    "Step-Ups"
+  ],
+  "Cardio": [
+    "Running",
+    "Jogging",
+    "Sprinting",
+    "Cycling",
+    "Jump Rope",
+    "Rowing Machine",
+    "Stair Climber",
+    "Elliptical",
+    "Burpees",
+    "Mountain Climbers",
+    "High Knees",
+    "Jump Squats",
+    "Shadow Boxing",
+    "Swimming",
+    "Battle Ropes"
+  ],
+  "Core": [
+    "Plank",
+    "Side Plank",
+    "Sit-Ups",
+    "Crunches",
+    "Bicycle Crunch",
+    "Russian Twists",
+    "Leg Raises",
+    "Hanging Leg Raises",
+    "Mountain Climbers",
+    "Flutter Kicks",
+    "V-Ups",
+    "Toe Touches",
+    "Cable Crunch",
+    "Ab Wheel Rollout",
+    "Dead Bug"
+  ],
+  "Triceps": [
+    "Tricep Dips",
+    "Bench Dips",
+    "Tricep Pushdown",
+    "Overhead Tricep Extension",
+    "Skull Crushers",
+    "Close-Grip Bench Press",
+    "Dumbbell Kickbacks",
+    "Cable Kickbacks",
+    "Resistance Band Pushdowns",
+    "Diamond Push-Ups",
+    "JM Press",
+    "Smith Machine Close-Grip Press",
+    "Single Arm Cable Extension",
+    "EZ Bar Skull Crushers",
+    "Bodyweight Tricep Extensions"
+  ],
+  "Mobility": [
+    "Arm Circles",
+    "Hip Circles",
+    "Neck Rolls",
+    "Cat-Cow Stretch",
+    "World's Greatest Stretch",
+    "Hip Flexor Stretch",
+    "Hamstring Stretch",
+    "Ankle Mobility Drills",
+    "Thoracic Spine Rotations",
+    "Shoulder Dislocations",
+    "Deep Squat Hold",
+    "Spinal Twists",
+    "Wrist Mobility Drills",
+    "Cossack Squats",
+    "Dynamic Lunges"
+  ],
+  "Full body": [
+    "Burpees",
+    "Deadlift",
+    "Clean and Press",
+    "Thrusters",
+    "Kettlebell Swings",
+    "Turkish Get-Up",
+    "Bear Crawls",
+    "Man Makers",
+    "Wall Balls",
+    "Farmer's Walk",
+    "Snatch",
+    "Push Press",
+    "Medicine Ball Slams",
+    "Jump Squats",
+    "Battle Rope Slams"
+  ]
+};
+
 function SiteFooter({ active = "plan" }) {
   return (
     <div className="w-full px-[100px] py-10">
@@ -223,15 +363,12 @@ function DayCard({ title, dayNumber, state, setState, onExerciseAdded }) {
 
         <div className="space-y-[13px]">
           <FieldLabel>Name of The Exercise</FieldLabel>
-          <div className="relative flex items-center justify-between rounded-[20px] border border-primary bg-[hsl(var(--figma-surface))] px-6 py-4 shadow-[0px_0px_0px_1px_hsl(var(--brand-2))]">
-            <div className="pointer-events-none absolute inset-0 rounded-[20px] shadow-[inset_0px_-6px_20px_0px_rgba(254,238,174,0.1)]" />
-            <input
-              value={left.exercise}
-              onChange={(e) => setState((s) => ({ ...s, draftLeft: { ...s.draftLeft, exercise: e.target.value } }))}
-              className="relative w-full bg-transparent text-[18px] font-medium leading-[1.1] tracking-[-0.36px] text-[hsl(var(--brand-soft))] focus:outline-none"
-              placeholder="e.g. Squats"
-            />
-          </div>
+          <SelectField
+            value={left.exercise}
+            onChange={(v) => setState((s) => ({ ...s, draftLeft: { ...s.draftLeft, exercise: v } }))}
+            options={right.type ? EXERCISES_BY_TYPE[right.type] || [] : []}
+          />
+          {!right.type && <div className="text-xs text-white/50">Select exercise type first</div>}
         </div>
         <div className="space-y-[13px]">
           <FieldLabel>Number of Rounds</FieldLabel>
@@ -399,6 +536,7 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
   const [toastOpen, setToastOpen] = React.useState(false);
   const toastTimerRef = React.useRef(null);
   const [savingPlan, setSavingPlan] = React.useState(false);
+  const [planName, setPlanName] = React.useState("");
   const { user } = useAuth();
 
   const showExerciseToast = React.useCallback(() => {
@@ -483,6 +621,7 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
       // Create plan row
       const planPayload = {
         user_id: appUser.user_id,
+        name: String(planName || "").trim() || "My Plan",
         goal: "Custom",
         difficulty: "Medium",
         days: daysCount,
@@ -560,6 +699,24 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
 
               <div className="w-full pb-24">
                 <div className="flex flex-col items-center gap-[73px]">
+                  {/* Plan Name Input */}
+                  <div className="w-[1150px] max-w-full rounded-[20px] border border-[hsl(var(--brand-soft))] bg-[hsl(var(--figma-surface))] px-5 py-8 shadow-[0px_41px_11px_0px_rgba(0,0,0,0),0px_26px_10px_0px_rgba(0,0,0,0.01),0px_15px_9px_0px_rgba(0,0,0,0.03),0px_7px_7px_0px_rgba(0,0,0,0.04),0px_2px_4px_0px_rgba(0,0,0,0.05)]">
+                    <div className="flex flex-col gap-4">
+                      <div className="text-[18px] font-light leading-[1.2] tracking-[-0.36px] text-[hsl(var(--brand-soft))]">
+                        Plan Name
+                      </div>
+                      <div className="relative flex items-center justify-between rounded-[20px] border border-primary bg-[hsl(var(--figma-surface))] px-6 py-4 shadow-[0px_0px_0px_1px_hsl(var(--brand-2))]">
+                        <div className="pointer-events-none absolute inset-0 rounded-[20px] shadow-[inset_0px_-6px_20px_0px_rgba(254,238,174,0.1)]" />
+                        <input
+                          value={planName}
+                          onChange={(e) => setPlanName(e.target.value)}
+                          className="relative w-full bg-transparent text-[18px] font-medium leading-[1.1] tracking-[-0.36px] text-[hsl(var(--brand-soft))] focus:outline-none placeholder:text-white/30"
+                          placeholder="e.g. Summer Training Plan"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   {days.map((state, idx) => (
                     <DayCard
                       key={`day-${idx + 1}`}

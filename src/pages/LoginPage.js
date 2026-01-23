@@ -128,7 +128,7 @@ export default function LoginPage() {
               <>
                 <div className="flex flex-col gap-[13px]">
                   <div className="text-xl font-light tracking-[-0.6px] text-[hsl(var(--figma-soft))]">
-                    User Name
+                    Email
                   </div>
                   <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="name" />
                 </div>
