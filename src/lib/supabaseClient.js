@@ -7,7 +7,7 @@ function requireEnv(name) {
       [
         `[Supabase] Missing required environment variable: ${name}`,
         "",
-        "Create a `.env.local` file in the project root (same folder as package.json) with:",
+        "Create a `.env.local` file in the Liftly root (same folder as package.json) with:",
         "  REACT_APP_SUPABASE_URL=...",
         "  REACT_APP_SUPABASE_ANON_KEY=...",
         "",
@@ -27,7 +27,7 @@ function envOneOf(names) {
     [
       `[Supabase] Missing required environment variable (one of): ${names.join(", ")}`,
       "",
-      "Create a `.env.local` file in the project root (same folder as package.json) with:",
+      "Create a `.env.local` file in the Liftly root (same folder as package.json) with:",
       "  REACT_APP_SUPABASE_URL=...",
       "  REACT_APP_SUPABASE_ANON_KEY=...   (or REACT_APP_SUPABASE_PUBLISHABLE_DEFAULT_KEY=...)",
       "",

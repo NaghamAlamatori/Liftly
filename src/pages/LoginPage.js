@@ -9,7 +9,7 @@ import { useAuth } from "../auth/AuthContext";
 import { supabase } from "../lib/supabaseClient";
 import { siteImage } from "../lib/publicAssets";
 
-// Always use the project logo for auth screens
+// Always use the Liftly logo for auth screens
 const imgLogo = siteImage("logo.png");
 
 function TopNav() {
