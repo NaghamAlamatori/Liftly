@@ -1,12 +1,15 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, Tag, FileText } from "lucide-react";
 import { siteImage } from "../../lib/publicAssets";
+import { useAuth } from "../../auth/AuthContext";
 
 const imgLogo = siteImage("logo.png"); // or your user/logo image
 
 export default function AdminSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const navItem = (to, Icon, label) => {
     const active = location.pathname === to;
@@ -51,8 +54,9 @@ export default function AdminSidebar() {
 
       {/* Logout */}
       <button
-        onClick={() => {
-          // add supabase logout later
+        onClick={async () => {
+          await logout();
+          navigate("/");
         }}
         className="absolute bottom-8 left-6 right-6 bg-yellow-400 text-black font-semibold py-3 px-6 rounded-full hover:bg-yellow-500 transition-colors"
       >
