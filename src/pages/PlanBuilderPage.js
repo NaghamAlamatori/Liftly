@@ -620,7 +620,7 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
       // Create plan row
       const planPayload = {
         user_id: appUser.user_id,
-        name: String(planName || "").trim() || "My Plan",
+        name: "My Plan",
         goal: "Custom",
         difficulty: "Medium",
         days: daysCount,
