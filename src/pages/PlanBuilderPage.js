@@ -536,7 +536,6 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
   const [toastOpen, setToastOpen] = React.useState(false);
   const toastTimerRef = React.useRef(null);
   const [savingPlan, setSavingPlan] = React.useState(false);
-  const [planName, setPlanName] = React.useState("");
   const { user } = useAuth();
 
   const showExerciseToast = React.useCallback(() => {
@@ -699,24 +698,6 @@ export default function PlanBuilderPage({ showSuccess = false } = {}) {
 
               <div className="w-full pb-24">
                 <div className="flex flex-col items-center gap-[73px]">
-                  {/* Plan Name Input */}
-                  <div className="w-[1150px] max-w-full rounded-[20px] border border-[hsl(var(--brand-soft))] bg-[hsl(var(--figma-surface))] px-5 py-8 shadow-[0px_41px_11px_0px_rgba(0,0,0,0),0px_26px_10px_0px_rgba(0,0,0,0.01),0px_15px_9px_0px_rgba(0,0,0,0.03),0px_7px_7px_0px_rgba(0,0,0,0.04),0px_2px_4px_0px_rgba(0,0,0,0.05)]">
-                    <div className="flex flex-col gap-4">
-                      <div className="text-[18px] font-light leading-[1.2] tracking-[-0.36px] text-[hsl(var(--brand-soft))]">
-                        Plan Name
-                      </div>
-                      <div className="relative flex items-center justify-between rounded-[20px] border border-primary bg-[hsl(var(--figma-surface))] px-6 py-4 shadow-[0px_0px_0px_1px_hsl(var(--brand-2))]">
-                        <div className="pointer-events-none absolute inset-0 rounded-[20px] shadow-[inset_0px_-6px_20px_0px_rgba(254,238,174,0.1)]" />
-                        <input
-                          value={planName}
-                          onChange={(e) => setPlanName(e.target.value)}
-                          className="relative w-full bg-transparent text-[18px] font-medium leading-[1.1] tracking-[-0.36px] text-[hsl(var(--brand-soft))] focus:outline-none placeholder:text-white/30"
-                          placeholder="e.g. Summer Training Plan"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
                   {days.map((state, idx) => (
                     <DayCard
                       key={`day-${idx + 1}`}
