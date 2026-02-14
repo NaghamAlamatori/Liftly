@@ -279,7 +279,7 @@ export default function AdminUsersPage() {
 
         {!loading ? (
           <>
-            <div className="grid grid-cols-3 gap-[32px]">
+            <div className="grid grid-cols-3 gap-[32px] pb-24">
               {paged.map((u) => (
                 <div
                   key={String(u.user_id ?? u.email)}

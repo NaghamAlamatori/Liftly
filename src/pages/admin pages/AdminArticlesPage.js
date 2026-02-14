@@ -158,7 +158,7 @@ export default function AdminArticlesPage() {
         {loading ? (
           <div className="text-sm text-white/70">Loading…</div>
         ) : (
-          <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px]">
+          <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px] pb-24">
             {(paged || []).map((a) => {
               const id = a.article_id;
               const img = String(a.image || "");

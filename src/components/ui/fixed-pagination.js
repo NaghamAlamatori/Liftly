@@ -47,11 +47,11 @@ export default function FixedPagination({
     <div
       className={
         admin
-          ? "ml-[297px] mr-[40px] mt-6 flex items-center justify-center"
+          ? "fixed bottom-0 left-[297px] right-[40px] flex items-center justify-center py-6 bg-background border-t border-[hsl(var(--brand-soft))] z-10"
           : "mt-6 flex items-center justify-center"
       }
     >
-      <div className="flex items-center gap-6 py-4">
+      <div className="flex items-center gap-6">
         {children}
       </div>
     </div>
@@ -63,7 +63,7 @@ export default function FixedPagination({
       disabled={disabled}
       onClick={onClick}
       className={[
-        "h-8 w-8 rounded-[4px] border text-sm font-bold",
+        "h-8 w-8 rounded-[4px] border text-sm font-bold cursor-pointer",
         active
           ? "border-primary text-primary"
           : "border-[hsl(var(--brand-soft))] text-[hsl(var(--brand-soft))]",
@@ -116,7 +116,7 @@ export default function FixedPagination({
           onChange={(e) =>
             onPageSizeChange?.(Number(e.target.value) || 6)
           }
-          className="h-8 w-[60px] rounded-[4px] border border-[hsl(var(--brand-soft))] bg-transparent px-2 text-sm text-[hsl(var(--brand-soft))]"
+          className="h-8 w-[60px] rounded-[4px] border border-[hsl(var(--brand-soft))] bg-transparent px-2 text-sm text-[hsl(var(--brand-soft))] cursor-pointer"
         >
           {[6, 12, 24, 48, 96].map((n) => (
             <option

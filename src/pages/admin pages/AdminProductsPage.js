@@ -180,7 +180,7 @@ export default function AdminProductsPage() {
           <div className="text-sm text-white/70">Loading…</div>
         ) : (
           <div>
-            <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px]">
+            <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px] pb-24">
               {(paged || []).map((p) => {
               const id = pkCol ? p?.[pkCol] : null;
               const title = getString(p?.name || p?.title || p?.product_name || "Product");
