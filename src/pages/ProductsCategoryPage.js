@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import SiteNav from "../components/SiteNav";
 import { cn } from "../lib/utils";
 import { supabase } from "../lib/supabaseClient";
+import FixedPagination from "../components/ui/fixed-pagination";
 
 function titleForSlug(slug) {
   switch (slug) {
@@ -240,27 +241,11 @@ export default function ProductsCategoryPage() {
             )}
           </div>
 
-          <div className="mt-14 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-3 text-sm text-white/70">
-                <div>Items per page</div>
-                <select
-                  value={pageSize}
-                  onChange={(e) => setPageSize(Number(e.target.value))}
-                  className="h-9 rounded-[12px] border border-[hsl(var(--figma-soft))] bg-[hsl(var(--figma-surface))] px-3 text-[hsl(var(--figma-text))] outline-none"
-                >
-                  {[6, 12, 24, 50, 100].map((n) => (
-                    <option key={n} value={n} className="text-white">
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <Pagination page={safePage} totalPages={totalPages} onPageChange={setPage} />
-            </div>
-          </div>
+          {/* Pagination removed from flow — fixed bottom pagination will be used */}
         </div>
       </div>
+      {/* Fixed pagination (shared component) */}
+      <FixedPagination page={safePage} totalPages={totalPages} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
     </div>
   );
 }

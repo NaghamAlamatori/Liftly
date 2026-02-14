@@ -5,6 +5,7 @@ import SiteNav from "../components/SiteNav";
 import { supabase } from "../lib/supabaseClient";
 import { DUMMY_ARTICLES } from "../lib/dummyArticles";
 import { mcpAsset, siteImage } from "../lib/publicAssets";
+import FixedPagination from "../components/ui/fixed-pagination";
 
 const imgFooterLogo = mcpAsset("3f31f2eb-a2a4-4bbb-a192-f9a72ebed057");
 
@@ -266,27 +267,12 @@ export default function ArticlesPage() {
             )}
           </div>
 
-          {!loading && filtered.length ? (
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-3 text-sm text-white/70">
-                <div>Items per page</div>
-                <select
-                  value={pageSize}
-                  onChange={(e) => setPageSize(Number(e.target.value))}
-                  className="h-9 rounded-[12px] border border-[hsl(var(--figma-soft))] bg-[hsl(var(--figma-surface))] px-3 text-[hsl(var(--figma-text))] outline-none"
-                >
-                  {[6, 12, 24,50,100].map((n) => (
-                    <option key={n} value={n} className="text-white">
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <Pagination page={safePage} totalPages={totalPages} onPageChange={setPage} />
-            </div>
-          ) : null}
+          {/* Pagination removed from flow — fixed bottom pagination will be used */}
         </div>
       </div>
+
+      {/* Fixed pagination (shared component) */}
+      <FixedPagination page={safePage} totalPages={totalPages} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
 
       <SiteFooter active="articles" />
     </div>

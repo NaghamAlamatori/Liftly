@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 import { supabase } from "../../lib/supabaseClient";
 import { Users } from "lucide-react";
+import FixedPagination from "../../components/ui/fixed-pagination";
 
 function normalizeUser(row) {
   const statusRaw =
@@ -301,86 +302,67 @@ export default function AdminUsersPage() {
         {loading ? <div className="text-sm text-white/70">Loading…</div> : null}
 
         {!loading ? (
-          <div className="grid grid-cols-3 gap-[32px]">
-            {paged.map((u) => (
-              <div
-                key={String(u.user_id ?? u.email)}
-                className="relative h-[186px] w-[310px] rounded-[31.745px] bg-card p-[24.474px] shadow-[0px_4px_15px_0px_rgba(254,238,174,0.3)]"
-              >
-                <p className="text-[24px] font-bold text-white">{u.full_name || "Unnamed"}</p>
-                <div className="mt-6 text-[12px] leading-[1.05] text-white/90">
-                  <p className="mb-0">{u.email || "—"}</p>
-                  <p className="mb-0">Status: {u.status || "inactive"}</p>
-                  <p>joined: {formatJoined(u.created_at)}</p>
-                </div>
+          <>
+            <div className="grid grid-cols-3 gap-[32px]">
+              {paged.map((u) => (
+                <div
+                  key={String(u.user_id ?? u.email)}
+                  className="relative h-[186px] w-[310px] rounded-[31.745px] bg-card p-[24.474px] shadow-[0px_4px_15px_0px_rgba(254,238,174,0.3)]"
+                >
+                  <p className="text-[24px] font-bold text-white">{u.full_name || "Unnamed"}</p>
+                  <div className="mt-6 text-[12px] leading-[1.05] text-white/90">
+                    <p className="mb-0">{u.email || "—"}</p>
+                    <p className="mb-0">Status: {u.status || "inactive"}</p>
+                    <p>joined: {formatJoined(u.created_at)}</p>
+                  </div>
 
-                <div className="absolute bottom-[18px] right-[18px] flex items-center gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="h-auto w-[46px] px-[10px] py-[8px] text-[8px]"
-                    onClick={() => {
-                      // Keep behavior simple; deep-link for future editing.
-                      // (We can add an edit modal later if you want it 1:1 with Figma.)
-                      window.history.replaceState(null, "", `/dashboard/users?id=${encodeURIComponent(String(u.user_id))}`);
-                      setEmailQ(u.email || "");
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="h-auto px-[10px] py-[8px] text-[8px]"
-                    onClick={() => setDeleteTarget(u)}
-                  >
-                    Delete
-                  </Button>
+                  <div className="absolute bottom-[18px] right-[18px] flex items-center gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-auto w-[46px] px-[10px] py-[8px] text-[8px]"
+                      onClick={() => {
+                        // Keep behavior simple; deep-link for future editing.
+                        // (We can add an edit modal later if you want it 1:1 with Figma.)
+                        window.history.replaceState(null, "", `/dashboard/users?id=${encodeURIComponent(String(u.user_id))}`);
+                        setEmailQ(u.email || "");
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-auto px-[10px] py-[8px] text-[8px]"
+                      onClick={() => setDeleteTarget(u)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Pagination removed from flow - fixed pagination will be rendered at the bottom of the page */}
+          </>
         ) : null}
       </div>
+      
 
-      {/* Pagination + page size */}
-      <div className="absolute left-[calc(37.5%+56px)] top-[808px] flex w-[748px] items-start justify-between">
-        <div className="flex items-center gap-2">
-          <PageBtn disabled={safePage <= 1} onClick={() => setPage(Math.max(1, safePage - 1))}>
-            ‹
-          </PageBtn>
-          {pageItems.map((p, idx) =>
-            p === "…" ? (
-              <PageBtn key={`dots-${idx}`} disabled>
-                …
-              </PageBtn>
-            ) : (
-              <PageBtn key={p} active={p === safePage} onClick={() => setPage(p)}>
-                {p}
-              </PageBtn>
-            )
-          )}
-          <PageBtn disabled={safePage >= totalPages} onClick={() => setPage(Math.min(totalPages, safePage + 1))}>
-            ›
-          </PageBtn>
-        </div>
+      {/* Fixed pagination (shared component) */}
+      <React.Suspense fallback={null}>
+        <FixedPagination
+          admin
+          page={safePage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+        />
+      </React.Suspense>
 
-        <div className="relative">
-          <select
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value) || 6)}
-            className="h-8 w-[50px] rounded-[4px] border border-[hsl(var(--brand-soft))] bg-transparent px-2 text-[14px] text-[hsl(var(--brand-soft))]"
-          >
-            {[6, 12, 24, 48, 96].map((n) => (
-              <option key={n} value={n} className="bg-[hsl(var(--figma-surface))] text-white">
-                {n}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="absolute left-[297px] top-[1000px] text-xs text-white/50">
+      {/* Note placed above the fixed pagination with a small gap */}
+      <div className="absolute left-[297px] bottom-[60px] text-xs text-white/50">
         Note: editing/deleting here affects the `public.users` profile rows. Managing Supabase Auth accounts requires
         server-side admin APIs.
       </div>

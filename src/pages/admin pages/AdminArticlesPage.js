@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 import { supabase } from "../../lib/supabaseClient";
 import { siteImage } from "../../lib/publicAssets";
+import FixedPagination from "../../components/ui/fixed-pagination";
 import { FileText } from "lucide-react";
 
 const imgDefault = siteImage("Articles.png");
@@ -22,6 +23,8 @@ function normalizeArticle(row) {
 export default function AdminArticlesPage() {
   const navigate = useNavigate();
   const [rows, setRows] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(6);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState("");
   const [search, setSearch] = React.useState("");
@@ -63,6 +66,34 @@ export default function AdminArticlesPage() {
       return title.includes(q) || body.includes(q);
     });
   }, [rows, search]);
+
+  const totalPages = React.useMemo(() => {
+    return Math.max(1, Math.ceil((filtered || []).length / Math.max(1, pageSize)));
+  }, [filtered, pageSize]);
+
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+
+  const paged = React.useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return (filtered || []).slice(start, start + pageSize);
+  }, [filtered, safePage, pageSize]);
+
+  function PageBtn({ children, active, disabled, onClick }) {
+    return (
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onClick}
+        className={[
+          "relative h-8 w-8 rounded-[4px] border text-center text-sm font-bold",
+          active ? "border-primary text-primary" : "border-[hsl(var(--brand-soft))] text-[hsl(var(--brand-soft))]",
+          disabled ? "opacity-50 cursor-not-allowed" : "",
+        ].join(" ")}
+      >
+        {children}
+      </button>
+    );
+  }
 
   async function onDeleteConfirmed() {
     const id = deleteTarget?.article_id;
@@ -143,7 +174,7 @@ export default function AdminArticlesPage() {
           <div className="text-sm text-white/70">Loading…</div>
         ) : (
           <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px]">
-            {(filtered || []).map((a) => {
+            {(paged || []).map((a) => {
               const id = a.article_id;
               const img = String(a.image || "");
               const desc = String(a.content || "").slice(0, 90);
@@ -196,6 +227,9 @@ export default function AdminArticlesPage() {
           </div>
         )}
       </div>
+
+      {/* Fixed pagination (shared component) */}
+      <FixedPagination admin page={safePage} totalPages={totalPages} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
     </div>
   );
 }

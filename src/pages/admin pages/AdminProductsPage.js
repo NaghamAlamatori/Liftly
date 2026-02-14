@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 import { supabase } from "../../lib/supabaseClient";
 import { Tag } from "lucide-react";
+import FixedPagination from "../../components/ui/fixed-pagination";
 
 function pickPk(row) {
   if (!row || typeof row !== "object") return null;
@@ -40,6 +41,8 @@ export default function AdminProductsPage() {
 
   // Filters (UI-only for now, wired for basic search)
   const [search, setSearch] = React.useState("");
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(6);
 
   const load = React.useCallback(async () => {
     setError("");
@@ -75,6 +78,34 @@ export default function AdminProductsPage() {
       return name.includes(q) || desc.includes(q);
     });
   }, [rows, search]);
+
+  const totalPages = React.useMemo(() => {
+    return Math.max(1, Math.ceil((filtered || []).length / Math.max(1, pageSize)));
+  }, [filtered, pageSize]);
+
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+
+  const paged = React.useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return (filtered || []).slice(start, start + pageSize);
+  }, [filtered, safePage, pageSize]);
+
+  function PageBtn({ children, active, disabled, onClick }) {
+    return (
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onClick}
+        className={[
+          "relative h-8 w-8 rounded-[4px] border text-center text-sm font-bold",
+          active ? "border-primary text-primary" : "border-[hsl(var(--brand-soft))] text-[hsl(var(--brand-soft))]",
+          disabled ? "opacity-50 cursor-not-allowed" : "",
+        ].join(" ")}
+      >
+        {children}
+      </button>
+    );
+  }
 
   async function onDeleteConfirmed() {
     if (!deleteTarget || !pkCol) return;
@@ -163,8 +194,9 @@ export default function AdminProductsPage() {
         {loading ? (
           <div className="text-sm text-white/70">Loading…</div>
         ) : (
-          <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px]">
-            {(filtered || []).map((p) => {
+          <div>
+            <div className="grid grid-cols-3 gap-x-[32px] gap-y-[40px]">
+              {(paged || []).map((p) => {
               const id = pkCol ? p?.[pkCol] : null;
               const title = getString(p?.name || p?.title || p?.product_name || "Product");
               const price = formatPrice(p?.price);
@@ -233,9 +265,22 @@ export default function AdminProductsPage() {
                 </div>
               );
             })}
+            </div>
+
+            {/* Pagination removed from flow - fixed pagination will be rendered at the bottom */}
           </div>
         )}
       </div>
+
+      {/* Fixed pagination (shared component) */}
+      <FixedPagination
+        admin
+        page={safePage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }
