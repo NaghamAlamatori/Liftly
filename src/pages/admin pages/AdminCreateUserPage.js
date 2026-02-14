@@ -55,16 +55,19 @@ export default function AdminCreateUserPage() {
       });
       if (authErr) throw authErr;
 
-      // Best-effort: create app profile row.
+      // signUp may not return a user id when email confirmations are enabled.
+      // To ensure admins can see the new account (pending verification) immediately,
+      // always create a row in the `users` table keyed by email. If/when the auth
+      // user appears later, a server-side function or trigger should reconcile the
+      // `auth_user_id` (recommended). Here we insert with null `auth_user_id` so the
+      // admin UI can list pending users and pick them up in realtime.
       const authUserId = data?.user?.id ?? null;
-      if (authUserId) {
-        await supabase.from("users").insert({
-          auth_user_id: authUserId,
-          email: cleanEmail,
-          full_name: fullName || null,
-          role: role || "user",
-        });
-      }
+      await supabase.from("users").insert({
+        auth_user_id: authUserId,
+        email: cleanEmail,
+        full_name: fullName || null,
+        role: role || "user",
+      });
 
       // Restore admin session (if it existed).
       if (prevSession?.access_token && prevSession?.refresh_token) {
@@ -74,7 +77,7 @@ export default function AdminCreateUserPage() {
         });
       }
 
-      setSuccess("User created.");
+      setSuccess("User created. Ask the user to check their email to confirm authentication.");
       setFullName("");
       setEmail("");
       setPassword("");

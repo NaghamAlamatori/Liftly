@@ -65,6 +65,32 @@ export default function AdminUsersPage() {
     load();
   }, [load]);
 
+  // Realtime: subscribe to changes on the `users` table so the admin UI updates immediately.
+  React.useEffect(() => {
+    // When any INSERT/UPDATE/DELETE occurs in `public.users`, reload the list.
+    const channel = supabase
+      .channel("public:users")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "users" },
+        () => {
+          load();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        // Fallback: try to unsubscribe the channel if removeChannel isn't available
+        try {
+          channel.unsubscribe();
+        } catch (__) {}
+      }
+    };
+  }, [load]);
+
   // Supports deep-linking from other pages: /dashboard/users?id=123
   React.useEffect(() => {
     const id = searchParams.get("id");
