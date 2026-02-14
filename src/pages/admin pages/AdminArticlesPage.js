@@ -45,7 +45,7 @@ export default function AdminArticlesPage() {
     } catch (e) {
       setError(
         e?.message ||
-          "Failed to load articles. Ensure your Supabase RLS allows admins to read/write the articles table."
+          "Failed to load articles, Ensure your Supabase RLS allows admins to read/write the articles table."
       );
       setRows([]);
     } finally {
