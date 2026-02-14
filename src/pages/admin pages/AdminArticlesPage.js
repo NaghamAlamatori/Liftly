@@ -109,7 +109,7 @@ export default function AdminArticlesPage() {
         loading={deleting}
         onClose={() => setDeleteTarget(null)}
         onConfirm={onDeleteConfirmed}
-      />
+      /> 
 
       {/* Title row */}
       <div className="absolute left-[297px] top-[21px] right-[40px] flex items-center justify-between">
