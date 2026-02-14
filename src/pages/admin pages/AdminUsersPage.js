@@ -166,31 +166,7 @@ export default function AdminUsersPage() {
     }
   }
 
-  function PageBtn({ children, active, disabled, onClick }) {
-    return (
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={onClick}
-        className={[
-          "relative h-8 w-8 rounded-[4px] border text-center text-sm font-bold",
-          active ? "border-primary text-primary" : "border-[hsl(var(--brand-soft))] text-[hsl(var(--brand-soft))]",
-          disabled ? "opacity-50 cursor-not-allowed" : "",
-        ].join(" ")}
-      >
-        {children}
-      </button>
-    );
-  }
 
-  const pageItems = React.useMemo(() => {
-    // Figma shows: 1 2 ... 9 10 (example). We'll show a compact version.
-    const t = totalPages;
-    if (t <= 7) return Array.from({ length: t }, (_, i) => i + 1);
-    if (safePage <= 3) return [1, 2, 3, "…", t - 1, t];
-    if (safePage >= t - 2) return [1, 2, "…", t - 2, t - 1, t];
-    return [1, "…", safePage - 1, safePage, safePage + 1, "…", t];
-  }, [totalPages, safePage]);
 
   return (
     <div className="relative min-h-[1024px] w-full bg-background" data-name="admin user" data-node-id="367:1609">

@@ -15,6 +15,7 @@ const imgVector = mcpAsset("8433be66-609f-481c-a227-29f5495ae72e");
 function CategoryCard({ image, title, link }) {
   const content = (
     <div className="category-card">
+      {image && <img alt={title} className="category-image" src={image} />}
       <div className="category-overlay" />
       <p className="category-title">{title}</p>
     </div>

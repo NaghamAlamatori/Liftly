@@ -78,22 +78,7 @@ export default function AdminArticlesPage() {
     return (filtered || []).slice(start, start + pageSize);
   }, [filtered, safePage, pageSize]);
 
-  function PageBtn({ children, active, disabled, onClick }) {
-    return (
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={onClick}
-        className={[
-          "relative h-8 w-8 rounded-[4px] border text-center text-sm font-bold",
-          active ? "border-primary text-primary" : "border-[hsl(var(--brand-soft))] text-[hsl(var(--brand-soft))]",
-          disabled ? "opacity-50 cursor-not-allowed" : "",
-        ].join(" ")}
-      >
-        {children}
-      </button>
-    );
-  }
+
 
   async function onDeleteConfirmed() {
     const id = deleteTarget?.article_id;

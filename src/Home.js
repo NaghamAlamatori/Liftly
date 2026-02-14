@@ -4,12 +4,10 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import { mcpAsset } from "./lib/publicAssets";
 
-const imgFrame7 = mcpAsset("81f79675-1738-4fa2-9d34-bc21977fd535");
 const imgProduct1 = mcpAsset("060da4a0-6a94-4740-8b2b-c8a9218d3c6d");
 const imgProduct2 = mcpAsset("ef4a916a-3bb3-4588-853e-d57cacf90dbd");
 const imgProduct3 = mcpAsset("34c01d7c-1a17-429a-97fd-a6838d1ac421");
 const imgArticle1 = mcpAsset("23a925a9-2c26-4de0-854c-f3cf87ba275b");
-const imgFrame21 = mcpAsset("cac28f93-186c-4aeb-82a9-8740635aaf71");
 
 function ProductCard({ image, title, colors, price }) {
   return (

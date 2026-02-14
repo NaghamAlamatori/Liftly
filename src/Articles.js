@@ -7,7 +7,6 @@ import { mcpAsset } from "./lib/publicAssets";
 const imgPhoto1 = mcpAsset("10b712c0-bf8f-4149-bb5a-f7f62a25b20b");
 const imgGrapefruit = mcpAsset("10510689-80cf-4b9d-bb93-18aeafc4c8f2");
 const imgVector = mcpAsset("c42e5c12-47d2-4339-b56f-f31019c59dba");
-const imgVector1 = mcpAsset("1801fc60-534e-48a9-aef5-6ca47d59472a");
 
 function ArticleCard({ image, title, description, featured = false }) {
   return (
