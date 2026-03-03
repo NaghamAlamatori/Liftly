@@ -7,11 +7,11 @@ import { DUMMY_ARTICLES } from "../lib/dummyArticles";
 import { mcpAsset, siteImage } from "../lib/publicAssets";
 import FixedPagination from "../components/ui/fixed-pagination";
 
-const imgFooterLogo = mcpAsset("3f31f2eb-a2a4-4bbb-a192-f9a72ebed057");
+// Updated this to siteImage which is generally more stable for UI icons/logos
+const imgFooterLogo = siteImage("logo.png"); 
 
 const imgArticle = siteImage("Articles.png");
 const imgFeatured = mcpAsset("10510689-80cf-4b9d-bb93-18aeafc4c8f2");
-
 
 function SiteFooter({ active = "articles" }) {
   return (
@@ -19,7 +19,16 @@ function SiteFooter({ active = "articles" }) {
       <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center justify-between gap-10">
         <div className="flex w-full items-center justify-between p-2">
           <div className="flex items-center gap-4">
-            <img alt="" src={imgFooterLogo} className="h-[75px] w-[80px]" />
+            {/* Added object-contain to ensure the logo isn't cropped or hidden */}
+            <img 
+              alt="Liftly Logo" 
+              src={imgFooterLogo} 
+              className="h-[75px] w-[80px] object-contain" 
+              onError={(e) => {
+                // Technical Peer Note: If the image fails to load, this prevents a broken icon
+                e.target.style.display = 'none';
+              }}
+            />
             <div className="text-[64px] font-bold leading-none text-primary">LIFTLY</div>
           </div>
           <div className="flex items-center gap-12 text-sm">
@@ -33,7 +42,6 @@ function SiteFooter({ active = "articles" }) {
               About
             </Link>
             <Link className={cn("text-[hsl(var(--figma-text))]", active === "products" && "font-semibold text-primary underline")} to="/products">
-              {" "}
               Products
             </Link>
             <Link className={cn("text-[hsl(var(--figma-text))]", active === "articles" && "font-semibold text-primary underline")} to="/articles">
@@ -49,6 +57,8 @@ function SiteFooter({ active = "articles" }) {
     </div>
   );
 }
+
+// ... rest of the components (SearchBar, ArticleCard, ArticlesPage) remain the same ...
 
 function SearchBar({ value, onChange, placeholder = "Search..." }) {
   return (
@@ -120,7 +130,6 @@ export default function ArticlesPage() {
           .order("created_at", { ascending: false });
         if (!mounted) return;
         if (error) {
-          // eslint-disable-next-line no-console
           console.warn("Failed to load articles:", error);
           setArticles(DUMMY_ARTICLES);
         } else {
@@ -200,17 +209,12 @@ export default function ArticlesPage() {
               </div>
             )}
           </div>
-
-          {/* Pagination removed from flow — fixed bottom pagination will be used */}
         </div>
       </div>
 
-      {/* Fixed pagination (shared component) */}
       <FixedPagination page={safePage} totalPages={totalPages} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={setPageSize} />
 
       <SiteFooter active="articles" />
     </div>
   );
 }
-
-

@@ -196,19 +196,7 @@ export default function AdminProductsPage() {
                       <div className="h-full w-full bg-white/5" />
                     )}
 
-                    {/* Kebab + mini menu (simple) */}
-                    <div className="absolute left-[14px] top-[14px]">
-                      <button
-                        type="button"
-                        className="text-white/80"
-                        onClick={() => {
-                          // no-op (design-only)
-                        }}
-                        aria-label="More"
-                      >
-                        ⋮
-                      </button>
-                    </div>
+
                   </div>
 
                   <button

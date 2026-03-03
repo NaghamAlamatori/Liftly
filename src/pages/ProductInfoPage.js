@@ -2,19 +2,9 @@ import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { mcpAsset } from "../lib/publicAssets";
+import SiteNav from "../components/SiteNav";
 
-const imgCart = mcpAsset("f43d7e6c-f9e6-4762-9cb1-3928f68d017d");
-const imgLogo2 = mcpAsset("1f770d87-8fd8-4838-a76e-ab3fd7e5f012");
-const imgStars = mcpAsset("e60163f3-73a8-4e8d-b169-a6fbd54536be");
 const imgFooterLogo = mcpAsset("ce02d4eb-3c4d-4cb0-a7b0-3e4322725adc");
-
-function Vector({ className = "" }) {
-  return (
-    <div className={className} data-name="Vector" data-node-id="160:875">
-      <img alt="" className="block h-full w-full max-w-none" src={imgCart} />
-    </div>
-  );
-}
 
 function AddedToCartModal({ onClose, onBuyMore }) {
   return (
@@ -145,41 +135,19 @@ export default function ProductInfoPage() {
 
   return (
     <div className="bg-background flex flex-col items-center gap-[100px] relative min-h-screen w-full" data-name="Product Info" data-node-id="187:1411">
-      {/* Header */}
-      <div className="flex w-[1240px] items-center justify-between py-[65px]" data-node-id="187:1412">
-        <div className="flex items-center gap-2" data-node-id="187:1413">
-          <div className="relative h-[38px] w-[40px]" data-name="logo 2" data-node-id="187:1414">
-            <img alt="" className="block h-full w-full max-w-none" src={imgLogo2} />
-          </div>
-          <p className="text-[24px] font-bold text-primary" data-node-id="187:1425">
-            LIFTLY
-          </p>
-        </div>
-
-        <div className="flex items-center gap-[48px] text-[16px] text-[hsl(var(--figma-text))]" data-node-id="187:1426">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/products">
-            <span className="font-semibold text-primary underline"> Products</span>
-          </Link>
-          <Link to="/articles">Articles</Link>
-          <Link to="/plan">Plan</Link>
-        </div>
-
-        <Link to="/cart" className="block">
-          <Vector className="relative h-[45px] w-[45px]" />
-        </Link>
-      </div>
+      {/* Header (use shared SiteNav for consistent logo/profile/cart) */}
+      <SiteNav active="products" layout="contained" />
 
       {/* Body */}
       <div className="relative flex w-[1440px] flex-col items-center justify-center gap-[10px]" data-node-id="187:1428">
+        {/* breadcrumb */}
         <p className="absolute left-[87px] top-[72px] w-[330px] text-[20px] tracking-[-0.6px] text-[#a1a1a1]" data-node-id="189:1620">
           {`Home > Products > ${product.name}`}
         </p>
 
         <Link
           to="/products"
-          className="absolute bottom-[72px] left-[100px] z-10 flex items-center rounded-[30px] border border-[hsl(var(--brand-soft))] px-[32px] py-[8px] text-[14px] font-bold text-[hsl(var(--brand-soft))] shadow-[0px_1px_2px_rgba(0,0,0,0.2)]"
+          className="absolute left-[87px] top-0 z-10 flex items-center rounded-[30px] border border-[hsl(var(--brand-soft))] px-[32px] py-[8px] text-[14px] font-bold text-[hsl(var(--brand-soft))] shadow-[0px_1px_2px_rgba(0,0,0,0.2)]"
           data-node-id="187:1470"
         >
           Back
@@ -217,9 +185,6 @@ export default function ProductInfoPage() {
                       <p className="w-[412px] text-left text-[34px] font-semibold leading-[1.32] tracking-[-1.02px] text-white" data-node-id="221:1532">
                         {product.name}
                       </p>
-                      <div className="relative h-[16px] w-[83px]" data-node-id="221:1533">
-                        <img alt="" className="block h-full w-full" src={imgStars} />
-                      </div>
                     </div>
                     <p className="w-full text-left text-[42px] font-semibold leading-[1.32] tracking-[-1.26px] text-white" data-node-id="221:1539">
                       ${product.price}
