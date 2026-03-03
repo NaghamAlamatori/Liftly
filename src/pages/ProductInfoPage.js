@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { mcpAsset } from "../lib/publicAssets";
 import SiteNav from "../components/SiteNav";
+import { useAuth } from "../auth/AuthContext";
 
 const imgFooterLogo = mcpAsset("ce02d4eb-3c4d-4cb0-a7b0-3e4322725adc");
 
@@ -51,6 +52,21 @@ export default function ProductInfoPage() {
   const { id } = useParams();
   const [addedOpen, setAddedOpen] = React.useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const cartKey = React.useMemo(
+    () => (user?.id ? `liftly_cart_${user.id}` : "liftly_cart_guest"),
+    [user?.id]
+  );
+
+  React.useEffect(() => {
+    if (user?.id) {
+      try {
+        localStorage.setItem("liftly_last_user_id", user.id);
+      } catch (_e) {
+        // ignore
+      }
+    }
+  }, [user?.id]);
 
   const [product, setProduct] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -106,7 +122,7 @@ export default function ProductInfoPage() {
       qty: 1
     };
 
-    const cart = JSON.parse(localStorage.getItem("liftly_cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
     const existingIdx = cart.findIndex(
       (item) => item.id === cartItem.id && item.color === cartItem.color && item.size === cartItem.size
     );
@@ -117,7 +133,7 @@ export default function ProductInfoPage() {
       cart.push(cartItem);
     }
 
-    localStorage.setItem("liftly_cart", JSON.stringify(cart));
+    localStorage.setItem(cartKey, JSON.stringify(cart));
     setAddedOpen(true);
   };
 
@@ -141,13 +157,15 @@ export default function ProductInfoPage() {
       {/* Body */}
       <div className="relative flex w-[1440px] flex-col items-center justify-center gap-[10px]" data-node-id="187:1428">
         {/* breadcrumb */}
-        <p className="absolute left-[87px] top-[72px] w-[330px] text-[20px] tracking-[-0.6px] text-[#a1a1a1]" data-node-id="189:1620">
-          {`Home > Products > ${product.name}`}
-        </p>
+        <div className="w-full flex justify-end px-[87px] pt-[40px]">
+          <p className="text-[20px] tracking-[-0.6px] text-[#a1a1a1] text-right">
+            {`Home > Products > ${product.name}`}
+          </p>
+        </div>
 
         <Link
           to="/products"
-          className="absolute left-[87px] top-0 z-10 flex items-center rounded-[30px] border border-[hsl(var(--brand-soft))] px-[32px] py-[8px] text-[14px] font-bold text-[hsl(var(--brand-soft))] shadow-[0px_1px_2px_rgba(0,0,0,0.2)]"
+          className="absolute left-[87px] top-[40px] z-10 flex items-center rounded-[30px] border border-[hsl(var(--brand-soft))] px-[32px] py-[8px] text-[14px] font-bold text-[hsl(var(--brand-soft))] shadow-[0px_1px_2px_rgba(0,0,0,0.2)]"
           data-node-id="187:1470"
         >
           Back

@@ -3,8 +3,33 @@ import { Link } from "react-router-dom";
 import SiteNav from "../components/SiteNav";
 import { ConfirmDialog } from "../components/ui/confirm-dialog";
 import { mcpAsset } from "../lib/publicAssets";
+import { useAuth } from "../auth/AuthContext";
 
 const imgFooterLogo = mcpAsset("a0544397-ed14-48f3-b263-31cb93ff5ee2");
+const LEGACY_CART_KEY = "liftly_cart";
+const GUEST_CART_KEY = "liftly_cart_guest";
+const DYNAMIC_PREFIX = "liftly_cart_";
+
+function mergeCartLists(a, b) {
+  const merged = Array.isArray(a) ? [...a] : [];
+  const extras = Array.isArray(b) ? b : [];
+
+  for (const item of extras) {
+    if (!item) continue;
+    const idx = merged.findIndex(
+      (m) => m.id === item.id && m.color === item.color && m.size === item.size
+    );
+    if (idx >= 0) {
+      const currentQty = Number(merged[idx].qty || 1);
+      const extraQty = Number(item.qty || 1);
+      merged[idx] = { ...merged[idx], qty: currentQty + (Number.isFinite(extraQty) ? extraQty : 0) };
+    } else {
+      merged.push(item);
+    }
+  }
+
+  return merged;
+}
 
 function formatMoney(n) {
   const num = Number(n);
@@ -67,19 +92,96 @@ function CartRow({ image, title, color, size, price, qty, onQtyChange, onRemove 
 }
 
 export default function CartPage() {
-  const [items, setItems] = React.useState(() => {
-    try {
-      const saved = localStorage.getItem("liftly_cart");
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  const { user } = useAuth();
+  const cartKey = React.useMemo(
+    () => (user?.id ? `${DYNAMIC_PREFIX}${user.id}` : GUEST_CART_KEY),
+    [user?.id]
+  );
+
+  const [items, setItems] = React.useState([]);
   const [deleteTarget, setDeleteTarget] = React.useState(null);
+
+  React.useEffect(() => {
+    try {
+      let base = [];
+
+      // When logged in, merge any legacy/guest carts into this user's cart
+      if (user?.id) {
+        const legacyRaw = localStorage.getItem(LEGACY_CART_KEY);
+        const guestRaw = localStorage.getItem(GUEST_CART_KEY);
+
+        if (legacyRaw) {
+          try {
+            base = mergeCartLists(base, JSON.parse(legacyRaw));
+          } catch (_e) {
+            // ignore malformed legacy data
+          }
+        }
+
+        if (guestRaw) {
+          try {
+            base = mergeCartLists(base, JSON.parse(guestRaw));
+          } catch (_e) {
+            // ignore malformed guest data
+          }
+        }
+
+        if (base.length) {
+          // Persist merged data to the user-specific cart and clear legacy locations
+          const existingRaw = localStorage.getItem(cartKey);
+          let existing = [];
+          if (existingRaw) {
+            try {
+              existing = JSON.parse(existingRaw);
+            } catch (_e) {
+              existing = [];
+            }
+          }
+
+          const mergedForUser = mergeCartLists(base, existing);
+          localStorage.setItem(cartKey, JSON.stringify(mergedForUser));
+          localStorage.removeItem(LEGACY_CART_KEY);
+          localStorage.removeItem(GUEST_CART_KEY);
+          localStorage.setItem("liftly_last_user_id", user.id);
+        }
+      } else {
+        // When logged out, expose the last user's cart under the guest cart
+        const lastUserId = localStorage.getItem("liftly_last_user_id");
+        if (lastUserId) {
+          const lastUserKey = `${DYNAMIC_PREFIX}${lastUserId}`;
+          const lastRaw = localStorage.getItem(lastUserKey);
+          if (lastRaw) {
+            try {
+              base = mergeCartLists(base, JSON.parse(lastRaw));
+            } catch (_e) {
+              // ignore malformed previous user data
+            }
+          }
+        }
+      }
+
+      // Always include whatever is already stored for the current cart key
+      const savedRaw = localStorage.getItem(cartKey);
+      let saved = [];
+      if (savedRaw) {
+        try {
+          saved = JSON.parse(savedRaw);
+        } catch (_e) {
+          saved = [];
+        }
+      }
+
+      const merged = mergeCartLists(base, saved);
+      setItems(merged);
+      localStorage.setItem(cartKey, JSON.stringify(merged));
+    } catch (_e) {
+      setItems([]);
+    }
+  }, [cartKey, user?.id]);
 
   const updateCart = (newItems) => {
     setItems(newItems);
-    localStorage.setItem("liftly_cart", JSON.stringify(newItems));
+    localStorage.setItem(cartKey, JSON.stringify(newItems));
   };
 
   const subtotal = React.useMemo(() => items.reduce((sum, it) => sum + parseMoney(it.price) * Number(it.qty || 1), 0), [items]);
@@ -121,7 +223,7 @@ export default function CartPage() {
           >
             Back
           </Link>
-          <p className="text-[18px] tracking-[-0.6px] text-[#a1a1a1]">
+          <p className="text-[18px] tracking-[-0.6px] text-[#a1a1a1] text-right">
             {"Home > Products > Cart"}
           </p>
         </div>

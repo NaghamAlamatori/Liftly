@@ -157,7 +157,7 @@ function ProductsPreview() {
                 <div className="mt-1 text-xl tracking-[-0.6px] text-white/80">{p.color} / {p.size}</div>
                 <div className="mt-8 flex items-center justify-between">
                   <div className="text-[32px] font-semibold leading-[1.1] tracking-[-0.96px] text-white">${p.price}</div>
-                  <Button onClick={() => navigate(`/products/${p.product_id}`)}>Buy Now</Button>
+                  <Button onClick={() => navigate(`/product/${p.product_id}`)}>Buy Now</Button>
                 </div>
               </div>
             </div>

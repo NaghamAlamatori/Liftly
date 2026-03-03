@@ -201,14 +201,16 @@ export default function PlansListPage() {
           onConfirm={onDeleteConfirmed}
         />
 
-        <div className="relative mx-auto h-[486px] w-[1440px] max-w-full pb-0 pl-[98px] pr-[10px] pt-[67px]">
-          <Button
-            asChild
-            variant="outline"
-            className="absolute bottom-[40px] left-[100px] h-auto border-[hsl(var(--brand-soft))] px-8 py-2 font-bold text-[hsl(var(--brand-soft))]"
-          >
-            <Link to="/plan">Back</Link>
-          </Button>
+        <div className="relative mx-auto h-[486px] w-[1440px] max-w-full pb-0 pl-[98px] pr-[10px] pt-[40px]">
+          <div className="mb-6">
+            <Button
+              asChild
+              variant="outline"
+              className="h-auto border-[hsl(var(--brand-soft))] px-8 py-2 font-bold text-[hsl(var(--brand-soft))]"
+            >
+              <Link to="/plan">Back</Link>
+            </Button>
+          </div>
 
           <div className="flex flex-col gap-[38px]">
             {loading ? (
